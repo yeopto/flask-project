@@ -38,6 +38,10 @@
             color: blue;
             font-weight: bold;
         }
+
+        #post-box {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -46,20 +50,20 @@
             <h1 class="display-4">나홀로 링크 메모장!</h1>
             <p class="lead">중요한 링크를 저장해두고, 나중에 볼 수 있는 공간 입니다.</p>
             <hr class="my-4">
-            <a class="btn btn-primary btn-lg" href="#" role="button">포스팅박스 열기</a>
+            <button id="posting-box-btn" onclick="openClose()" class="btn btn-primary btn-lg">포스팅박스 열기</button>
         </div>
-        <div class="posting-box">
+        <div class="posting-box" id="post-box">
             <div class="form-group">
                 <label for="formGroupExampleInput">아티클 URL</label>
-                <input type="text" class="form-control" placeholder="">
+                <input id="post-url" type="text" class="form-control" placeholder="">
             </div>
             <div class="form-group">
                 <label for="formGroupExampleInput2">간단 코멘트</label>
                 <input type="text" class="form-control" placeholder="">
             </div>
-            <button onclick="hello()" class="btn btn-primary" type="button">기사저장</button>
+            <button class="btn btn-primary" type="button">기사저장</button>
         </div>
-        <div class="card-columns">
+        <div class="card-columns" id="cards-box">
             <div class="card">
                 <img src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg" class="card-img-top" alt="Card image cap">
                 <div class="card-body">
@@ -111,12 +115,15 @@
         </div>
     </div>
     <script>
-        function hey() {
-            alert('안녕!');
-        }
-
-        function hello() {
-            console.log('hello!');
+        function openClose() {
+            let status = $("#post-box").css("display");
+            if (status == 'block') {
+                $('#post-box').hide();
+                $('#posting-box-btn').text('포스팅박스 열기');
+            } else {
+                $('#post-box').show();
+                $('#posting-box-btn').text('포스팅박스 닫기');
+            }
         }
     </script>
 </body>
