@@ -47,8 +47,8 @@
 <body>
     <div class="wrap">
         <div class="jumbotron">
-            <h1 class="display-4">나홀로 링크 메모장!</h1>
-            <p class="lead">중요한 링크를 저장해두고, 나중에 볼 수 있는 공간 입니다.</p>
+            <h1 class="display-4">내 메모장!</h1>
+            <p class="lead">중요한 링크를 저장!</p>
             <hr class="my-4">
             <button id="posting-box-btn" onclick="openClose()" class="btn btn-primary btn-lg">포스팅박스 열기</button>
         </div>
@@ -116,8 +116,8 @@
     </div>
     <script>
         $(document).ready(function() {
-          $("#cards-box").html("");
-          showArticles();
+            $("#cards-box").html("");
+            showArticles();
         });
 
         function openClose() {
@@ -132,39 +132,50 @@
         }
         
         function postArticle() {
-          let url = $("#post-url").val();
-          let comment = $("#post-comment").val();
+            let url = $("#post-url").val();
+            let comment = $("#post-comment").val();
 
-          $.ajax({
-            type: "POST",
-            url: "/memo",
-            data: {url_give: url, comment_give: comment},
-            success: function(response) {
-              if (response["result"] == "success") {
-                alert("포스팅 성공!");
-                window.location.reload();
-              } else {
-                alert("서버 오류!");
-              }
-            }
-          })
+            $.ajax({
+                type: "POST",
+                url: "/memo",
+                data: {url_give: url, comment_give: comment},
+                success: function(response) {
+                    if (response["result"] == "success") {
+                        alert("포스팅 성공!");
+                        window.location.reload();
+                    } else {
+                        alert("서버 오류!");
+                    }
+                }
+            })
         }
 
         function showArticles() {
-          $.ajax({
-            type: "GET",
-            url: "/memo",
-            data: {},
-            success: function(response) {
-              if (response["result"] == "success") {
-                alert(response["msg"]);
-              }
-            }
-          })
+            $.ajax({
+                type: "GET",
+                url: "/memo",
+                data: {},
+                success: function(response) {
+                    let articles = response["articles"];
+                    if (response["result"] == "success") {
+                        for (let i = 0; i < articles.length; i++) {
+                            makeCard(articles[i]["image"], articles[i]["url"], articles[i]["title"], articles[i]["desc"], articles[i]["comment"]);
+                        }
+                    }
+                }
+            })
         }
 
-        function makeCard(url, title, desc, comment, image) {
-
+        function makeCard(image, url, title, desc, comment) {
+            let temp_html = `<div class="card">
+                                <img src="${image}" class="card-img-top" alt="Card image cap">
+                                <div class="card-body">
+                                    <a href="${url}" target="_blank" class="card-title">${title}</a>
+                                    <p class="card-text">${desc}</p>
+                                    <p class="card-text comment">${comment}</p>
+                                </div>
+                            </div>`;
+            $("#cards-box").append(temp_html);
         }
     </script>
 </body>
