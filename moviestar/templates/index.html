@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
   <title>My favorite moviestar</title>
   <style>
+    #add {
+      display: none;
+    }
+
     .center {
       text-align: center;
     }
@@ -42,6 +46,18 @@
       font-weight: bold;
       color: brown;
     }
+
+    .button.is-primary {
+      background-color: darkolivegreen;
+    }
+
+    .wrap_create {
+      margin: 30px auto;
+      width: 500px;
+      border: solid 1px white;
+      border-radius: 10px;
+      padding: 5px;
+    }
   </style>
 </head>
 <body>
@@ -54,24 +70,21 @@
               <h2 class="subtitle">
                   유명한 영화인들입니다.. 내 입맛대로 순위를 만들어보겠습니다..🤡
               </h2>
+              <div class="control">
+                <button id="create_button" class="button is-primary" onclick="openClose()">추가할려면 클릭</button>
+              </div>
           </div>
       </div>
   </section>
-  <div class="wrap_create">
+  <div id="add" class="wrap_create">
     <div class="field">
-      <label class="label">Name</label>
+      <label class="label">영화인 URL</label>
       <div class="control">
-        <input class="input" type="text" placeholder="e.g Alex Smith">
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">Email</label>
-      <div class="control">
-        <input class="input" type="email" placeholder="e.g. alexsmith@gmail.com">
+        <input class="input" type="text" placeholder="배우정보에 대한 주소를 입력해주세요.">
       </div>
     </div>
     <div class="control">
-      <button class="button is-primary">Submit</button>
+      <button class="button is-primary">추가!</button>
     </div>
   </div>
   <div class="star-list" id="star-box">
@@ -110,8 +123,19 @@
       showStar();
     });
     
+    function openClose() {
+      let status = $("#add").css("display");
+      if (status == 'block') {
+          $('#add').hide();
+          $('#create_button').text('추가하려면 클릭');
+      } else {
+          $('#add').show();
+          $('#create_button').text('닫기');
+      }
+    }
+
     function showStar() {
-      // $('#star-box').empty();
+      $('#star-box').empty();
 
       $.ajax({
         type: 'GET',
