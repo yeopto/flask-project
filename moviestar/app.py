@@ -1,3 +1,4 @@
+from crypt import methods
 from pymongo import MongoClient
 
 from flask import Flask, render_template, jsonify, request
@@ -25,11 +26,28 @@ def like_stars():
   db.mystar.update_one({'name': name_receive}, {'$set': {'like': new_like}})
   return jsonify({'result': 'success'})
 
+@app.route('/api/hate', methods=['POST'])
+def hate_stars():
+  name_receive = request.form['name_give']
+
+  star = db.mystar.find_one({'name': name_receive})
+  new_like = star['like'] - 1
+  if new_like < 0:
+    return jsonify({'result': 'error'})
+  else:
+    db.mystar.update_one({'name': name_receive}, {'$set': {'like': new_like}})
+    return jsonify({'result': 'success'})
+
 @app.route('/api/delete', methods=['POST'])
 def delete_stars():
   name_receive = request.form['name_give']
   db.mystar.delete_one({'name': name_receive})
   return jsonify({'result': 'success'})
+
+@app.route('/api/create', methods=['POST'])
+def create_stars():
+  return 
+  
 
 if __name__ == '__main__':
   app.run('0.0.0.0', port=5000, debug=True)
