@@ -12,16 +12,119 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
   <title>연습</title>
+  <style>
+    #input-box {
+      width: 500px;
+      margin: 10px auto;
+    }
+  </style>
 </head>
 <body>
   <div class="wrap">
     <div class="jumbotron">
-      <h1 class="display-4">Hello, world!</h1>
-      <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+      <h1 class="display-4">게시판</h1>
+      <p class="lead">게시판 연습</p>
       <hr class="my-4">
-      <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+      <div id="input-box">
+        <div class="form-group">
+          <label for="exampleInputEmail1">제목</label>
+          <input type="text" id="post-head">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">내용</label>
+          <input type="text" id="post-comment">
+        </div>
+        <button class="btn btn-primary" onclick="postArticle()">확인</button>
+      </div>
+    </div>
+    <div class="card-deck" id="posting">
+      <div class="card" id="post-size">
+        <div class="card-body">
+          <h5 id="head-title" class="card-title">Special title treatment</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <button class="btn btn-primary" onclick="addEditPost()">수정</button>
+          <button onclick="deletePost()" class="btn btn-primary">삭제</button>
+        </div>
+      </div>
+      <div class="card" id="post-size">
+        <div class="card-body">
+          <h5 class="card-title">Special title treatment</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <button class="btn btn-primary">수정</button>
+          <button onclick="deletePost()" class="btn btn-primary">삭제</button>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+    $(document).ready(function() {
+      $("#posting").html("");
+      showArticle();
+    });
+
+    function postArticle() {
+      let head = $("#post-head").val();
+      let comment = $("#post-comment").val();
+      
+      $.ajax({
+        type: "POST",
+        url: "/post",
+        data: {head_give: head, comment_give: comment},
+        success: function(response) {
+          if (response["result"] == "success") {
+            alert("성공");
+            window.location.reload();
+          }
+          else {
+            alert("삐삐삐 오류");
+          }
+        }
+      })
+    }
+
+    function showArticle() {
+      $.ajax({
+        type: 'GET',
+        url: '/show',
+        data: {},
+        success: function(response) {
+          let articles = response["articles"];
+          if (response["result"] == "success") {
+            for (let i = 0; i < articles.length; i++) {
+              makeCard(articles[i]["head"], articles[i]["comment"]);
+            }
+          }
+        }
+      });
+    }
+
+    function makeCard(head, comment) {
+      let tempHtml = `<div class="card" id="post-size">
+        <div class="card-body">
+          <h5 id="head-title" class="card-title">${head}</h5>
+          <p class="card-text">${comment}</p>
+          <button class="btn btn-primary">수정</button>
+          <button onclick="deletePost()" class="btn btn-primary">삭제</button>
+        </div>
+      </div>`;
+      $("#posting").append(tempHtml);
+    }
+
+    function deletePost() {
+      let title = $("#head-title").text()
+
+      $.ajax({
+        type: "POST",
+        url: "/delete",
+        data: {title_give : title},
+        success: function(response) {
+          if (response["result"] == "success") {
+            alert("삭제 완료");
+          }
+          window.location.reload();
+        }
+      });
+    }
+  </script>
 </body>
 </html>
